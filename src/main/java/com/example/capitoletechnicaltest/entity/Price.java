@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
  * This class maps to the database table storing pricing details.
  */
 @Entity
+@Table(name = "PRICES")
 public class Price {
 
     /**
@@ -28,11 +29,13 @@ public class Price {
     /**
      * Start date and time when the price becomes applicable.
      */
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime startDate;
 
     /**
      * End date and time when the price ceases to be applicable.
      */
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime endDate;
 
     /**
