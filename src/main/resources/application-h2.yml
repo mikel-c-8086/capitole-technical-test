@@ -33,4 +33,4 @@ spring:
       # - "update": Updates the schema without dropping existing data.
       # - "validate": Validates the schema against the model without making changes.
       # - "none": No schema management is performed.
-      ddl-auto: create
+      ddl-auto: none

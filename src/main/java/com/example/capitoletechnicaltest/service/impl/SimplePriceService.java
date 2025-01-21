@@ -3,6 +3,7 @@ package com.example.capitoletechnicaltest.service.impl;
 import com.example.capitoletechnicaltest.entity.Price;
 import com.example.capitoletechnicaltest.repository.PriceRepository;
 import com.example.capitoletechnicaltest.service.PriceService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class SimplePriceService implements PriceService {
      *
      * @param priceRepository The repository for accessing price data.
      */
+    @Autowired
     public SimplePriceService(PriceRepository priceRepository) {
         this.priceRepository = priceRepository;
     }
