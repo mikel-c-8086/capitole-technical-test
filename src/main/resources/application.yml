@@ -1,0 +1,9 @@
+# Main Spring Boot configuration file.
+# Specifies the active profile for the application. Profiles allow
+# environment-specific configurations (e.g., development, testing, production).
+
+spring:
+  profiles:
+    # Sets the active profile to "h2".
+    # This means the configurations defined in the application-h2.yml file will be loaded.
+    active: h2

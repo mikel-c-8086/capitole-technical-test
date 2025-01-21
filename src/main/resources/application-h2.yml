@@ -1,0 +1,30 @@
+# Configuration specific to the "h2" profile.
+# This profile uses an in-memory H2 database, which is ideal for development and testing purposes.
+
+spring:
+  datasource:
+    # The URL for connecting to the H2 database.
+    # The database will be created in memory and named "testdb".
+    # Since it is in-memory, all data will be cleared when the application stops.
+    url: jdbc:h2:mem:testdb
+
+    # The JDBC driver class name for the H2 database.
+    driver-class-name: org.h2.Driver
+
+    # Database access credentials.
+    # H2's default credentials: username is "sa" with no password.
+    username: sa
+    password:
+
+  jpa:
+    hibernate:
+      # Determines how the database schema is managed when the application starts.
+      # "create" ensures that the schema is dropped and recreated each time,
+      # providing a clean state for development or testing.
+      ddl-auto: create
+
+    properties:
+      hibernate:
+        # Specifies the Hibernate dialect for H2.
+        # This ensures that Hibernate generates SQL optimized for the H2 database.
+        dialect: org.hibernate.dialect.H2Dialect
