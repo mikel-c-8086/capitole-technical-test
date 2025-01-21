@@ -1,0 +1,36 @@
+# Configuration specific to the "h2" profile.
+# This profile uses an in-memory H2 database, which is ideal for development and testing purposes.
+# All data is stored in memory and cleared when the application stops.
+
+spring:
+  datasource:
+    # The URL for connecting to the H2 database.
+    # The database will be created in memory and named "testdb".
+    # Since it is in-memory, all data will be cleared when the application stops.
+    url: jdbc:h2:mem:testdb
+
+    # The JDBC driver class name for the H2 database.
+    # This is required for Spring Boot to connect using the appropriate driver.
+    driver-class-name: org.h2.Driver
+
+    # Database access credentials.
+    # H2's default credentials: username is "sa" with no password.
+    # These credentials are acceptable for development and testing but not for production use.
+    username: sa
+    password:
+
+  jpa:
+    # Disables the "open-in-view" setting.
+    # When set to "false", it ensures that the Hibernate session is closed after the transaction ends,
+    # avoiding lazy initialization issues in the view layer and promoting better separation of concerns.
+    open-in-view: false
+
+    hibernate:
+      # Determines how the database schema is managed when the application starts.
+      # "create" drops the schema and recreates it each time the application restarts.
+      # This ensures a clean state, making it ideal for development or testing scenarios.
+      # Other options include:
+      # - "update": Updates the schema without dropping existing data.
+      # - "validate": Validates the schema against the model without making changes.
+      # - "none": No schema management is performed.
+      ddl-auto: create
