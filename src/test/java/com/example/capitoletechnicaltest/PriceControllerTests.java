@@ -38,7 +38,7 @@ public class PriceControllerTests {
         assertNotNull(response.getBody()); // Ensure the response body is not null.
         assertEquals(1, response.getBody().getBrandId()); // Verify the brandId.
         assertEquals(35455, response.getBody().getProductId()); // Verify the productId.
-        assertEquals(new BigDecimal("35.50"), response.getBody().getPrice()); // Verify the price.
+        assertEquals(new BigDecimal("35.50"), response.getBody().getAmount()); // Verify the price.
     }
 
     /**
@@ -55,7 +55,7 @@ public class PriceControllerTests {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().getBrandId());
         assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("25.45"), response.getBody().getPrice());
+        assertEquals(new BigDecimal("25.45"), response.getBody().getAmount());
     }
 
     /**
@@ -72,7 +72,7 @@ public class PriceControllerTests {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().getBrandId());
         assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("35.50"), response.getBody().getPrice());
+        assertEquals(new BigDecimal("35.50"), response.getBody().getAmount());
     }
 
     /**
@@ -89,7 +89,7 @@ public class PriceControllerTests {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().getBrandId());
         assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("30.50"), response.getBody().getPrice());
+        assertEquals(new BigDecimal("30.50"), response.getBody().getAmount());
     }
 
     /**
@@ -106,7 +106,7 @@ public class PriceControllerTests {
         assertNotNull(response.getBody());
         assertEquals(1, response.getBody().getBrandId());
         assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("38.95"), response.getBody().getPrice());
+        assertEquals(new BigDecimal("38.95"), response.getBody().getAmount());
     }
 
     /**

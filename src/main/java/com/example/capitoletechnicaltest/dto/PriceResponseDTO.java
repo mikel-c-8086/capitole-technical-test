@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class PriceResponseDTO {
     private int productId;
     private int brandId;
-    private BigDecimal price;
+    private BigDecimal amount;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String curr;
@@ -23,7 +23,7 @@ public class PriceResponseDTO {
             LocalDateTime endDate) {
         this.productId = productId;
         this.brandId = brandId;
-        this.price = price;
+        this.amount = price;
         this.curr = curr;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -46,12 +46,12 @@ public class PriceResponseDTO {
         this.brandId = brandId;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public LocalDateTime getStartDate() {

@@ -3,6 +3,7 @@ package com.example.capitoletechnicaltest.service.impl;
 import com.example.capitoletechnicaltest.domain.PricePersistence;
 import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.entity.Price;
+import com.example.capitoletechnicaltest.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -38,11 +39,12 @@ class SimplePriceServiceTest {
         int productId = 100;
         LocalDateTime applicationDate = LocalDateTime.of(2023, 12, 25, 15, 0);
 
-        // Act
-        Optional<PriceResponseDTO> result = simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
+        // Act & Assert
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
+        });
 
-        // Assert
-        assertFalse(result.isPresent(), "Expected no price to be found");
+        assertEquals("No applicable price found for the given criteria.", exception.getMessage());
     }
 
     /**
@@ -67,7 +69,7 @@ class SimplePriceServiceTest {
         PriceResponseDTO dto = result.get();
         assertEquals(productId, dto.getProductId());
         assertEquals(brandId, dto.getBrandId());
-        assertEquals(new BigDecimal("35.50"), dto.getPrice());
+        assertEquals(new BigDecimal("35.50"), dto.getAmount());
         assertEquals("EUR", dto.getCurr());
     }
 
@@ -81,7 +83,7 @@ class SimplePriceServiceTest {
             Price price = new Price();
             price.setBrandId(brandId);
             price.setProductId(productId);
-            price.setPrice(new BigDecimal("35.50"));
+            price.setAmount(new BigDecimal("35.50"));
             price.setCurr("EUR");
             price.setStartDate(LocalDateTime.of(2023, 12, 24, 0, 0));
             price.setEndDate(LocalDateTime.of(2023, 12, 26, 23, 59));

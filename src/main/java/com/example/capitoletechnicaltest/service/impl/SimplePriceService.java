@@ -54,7 +54,7 @@ public class SimplePriceService implements PriceService {
                 .map(price -> new PriceResponseDTO(
                         price.getProductId(),
                         price.getBrandId(),
-                        price.getPrice(),
+                        price.getAmount(),
                         price.getCurr(),
                         price.getStartDate(),
                         price.getEndDate()
