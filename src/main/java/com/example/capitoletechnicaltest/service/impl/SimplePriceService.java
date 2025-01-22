@@ -3,6 +3,7 @@ package com.example.capitoletechnicaltest.service.impl;
 import com.example.capitoletechnicaltest.domain.PricePersistence;
 import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.entity.Price;
+import com.example.capitoletechnicaltest.exception.ResourceNotFoundException;
 import com.example.capitoletechnicaltest.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,9 @@ public class SimplePriceService implements PriceService {
                         price.getCurr(),
                         price.getStartDate(),
                         price.getEndDate()
-                ));
+                )).or(() -> {
+                    throw new ResourceNotFoundException("No applicable price found for the given criteria.");
+                });
     }
 
 }

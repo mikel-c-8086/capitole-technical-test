@@ -1,14 +1,14 @@
 package com.example.capitoletechnicaltest;
 
-import com.example.capitoletechnicaltest.entity.Price;
+import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,9 +30,9 @@ public class PriceControllerTests {
      */
     @Test
     public void test1() {
-        ResponseEntity<Price> response = restTemplate.getForEntity(
+        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
                 baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T10:00:00",
-                Price.class
+                PriceResponseDTO.class
         );
 
         assertNotNull(response.getBody()); // Ensure the response body is not null.
@@ -47,9 +47,9 @@ public class PriceControllerTests {
      */
     @Test
     public void test2() {
-        ResponseEntity<Price> response = restTemplate.getForEntity(
+        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
                 baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T16:00:00",
-                Price.class
+                PriceResponseDTO.class
         );
 
         assertNotNull(response.getBody());
@@ -64,9 +64,9 @@ public class PriceControllerTests {
      */
     @Test
     public void test3() {
-        ResponseEntity<Price> response = restTemplate.getForEntity(
+        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
                 baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T21:00:00",
-                Price.class
+                PriceResponseDTO.class
         );
 
         assertNotNull(response.getBody());
@@ -81,9 +81,9 @@ public class PriceControllerTests {
      */
     @Test
     public void test4() {
-        ResponseEntity<Price> response = restTemplate.getForEntity(
+        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
                 baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-15T10:00:00",
-                Price.class
+                PriceResponseDTO.class
         );
 
         assertNotNull(response.getBody());
@@ -98,9 +98,9 @@ public class PriceControllerTests {
      */
     @Test
     public void test5() {
-        ResponseEntity<Price> response = restTemplate.getForEntity(
+        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
                 baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-16T21:00:00",
-                Price.class
+                PriceResponseDTO.class
         );
 
         assertNotNull(response.getBody());
@@ -108,4 +108,35 @@ public class PriceControllerTests {
         assertEquals(35455, response.getBody().getProductId());
         assertEquals(new BigDecimal("38.95"), response.getBody().getPrice());
     }
+
+    /**
+     * Tests the API response for a request with no applicable price.
+     */
+    @Test
+    public void testGetApplicablePrice_noPriceFound() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                baseUrl + "?productId=99999&brandId=1&applicationDate=2020-06-14T10:00:00",
+                String.class
+        );
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().contains("No applicable price found"));
+    }
+
+    /**
+     * Tests the API response for a request with invalid input.
+     */
+    @Test
+    public void testGetApplicablePrice_invalidInput() {
+        ResponseEntity<String> response = restTemplate.getForEntity(
+                baseUrl + "?productId=invalid&brandId=1&applicationDate=2020-06-14T10:00:00",
+                String.class
+        );
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().contains("required type 'int'"));
+    }
+
 }
