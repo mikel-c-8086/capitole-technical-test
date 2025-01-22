@@ -1,4 +1,3 @@
-
 # Price API Service
 
 This is a Spring Boot application designed to provide a REST API for querying product prices based on a specific date, product ID, and brand ID. It uses an in-memory H2 database initialized with sample data to simulate a real-world e-commerce pricing scenario.
@@ -112,11 +111,31 @@ Test results are printed to the console and validate the expected output for the
 
 ## Design and Development Highlights
 
-- **Hexagonal Architecture**: Ensures separation of concerns between domain logic, infrastructure, and API layers.
-- **Clean Code**: Follows industry best practices for naming conventions, dependency injection, and modularity.
-- **In-Memory Database**: Utilizes H2 for lightweight, fast testing and initialization.
-- **Exception Handling**: Global exception handling with Spring's `@ControllerAdvice`.
-- **Integration Tests**: Comprehensive tests using MockMvc for the REST API.
+### Domain-Driven Design (DDD)
+
+This project adheres to the principles of **Domain-Driven Design** (DDD), which ensures that the core business logic is the primary focus of the application. Key aspects of the DDD implementation include:
+
+- **Entities:**
+    - The `Price` class represents the core domain entity. It encapsulates the attributes and behaviors associated with pricing.
+
+- **Domain Services:**
+    - The `PriceService` interface and its implementation (`SimplePriceService`) handle the core business rules, such as filtering prices and determining priorities.
+
+- **Repositories:**
+    - The `PriceRepository` interface provides an abstraction for persisting and retrieving domain entities without exposing implementation details.
+
+- **Separation of Concerns:**
+    - By leveraging a layered architecture, the project isolates domain logic from infrastructure and application concerns, ensuring maintainability and scalability.
+
+### Hexagonal Architecture
+
+- Ensures separation of concerns between domain logic, infrastructure, and API layers.
+- Facilitates testing by allowing mock implementations of dependencies like repositories.
+
+### Clean Code Practices
+
+- Follows industry best practices for naming conventions, dependency injection, and modularity.
+- Includes comprehensive unit and integration tests.
 
 ---
 
