@@ -2,6 +2,8 @@ package com.example.capitoletechnicaltest;
 
 import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -17,103 +19,38 @@ import static org.junit.jupiter.api.Assertions.*;
  * It uses Spring's TestRestTemplate to simulate HTTP requests to the API.
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PriceControllerTests {
+class PriceControllerTests {
 
     @Autowired
     private TestRestTemplate restTemplate; // Injects a TestRestTemplate to perform HTTP requests.
 
     private final String baseUrl = "/api/prices"; // Base URL for the PriceController endpoints.
 
-    /**
-     * Tests the API response for a specific date and time (2020-06-14T10:00:00).
-     * Verifies that the price, productId, and brandId match the expected values.
-     */
-    @Test
-    public void test1() {
+    @ParameterizedTest
+    @CsvSource({
+            "2020-06-14T10:00:00, 35455, 1, 35.50",
+            "2020-06-14T16:00:00, 35455, 1, 25.45",
+            "2020-06-14T21:00:00, 35455, 1, 35.50",
+            "2020-06-15T10:00:00, 35455, 1, 30.50",
+            "2020-06-16T21:00:00, 35455, 1, 38.95"
+    })
+    void testGetPrice(String applicationDate, int productId, int brandId, BigDecimal expectedAmount) {
         ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
-                baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T10:00:00",
+                baseUrl + "?productId=" + productId + "&brandId=" + brandId + "&applicationDate=" + applicationDate,
                 PriceResponseDTO.class
         );
 
-        assertNotNull(response.getBody()); // Ensure the response body is not null.
-        assertEquals(1, response.getBody().getBrandId()); // Verify the brandId.
-        assertEquals(35455, response.getBody().getProductId()); // Verify the productId.
-        assertEquals(new BigDecimal("35.50"), response.getBody().getAmount()); // Verify the price.
-    }
-
-    /**
-     * Tests the API response for a specific date and time (2020-06-14T16:00:00).
-     * Verifies that the price, productId, and brandId match the expected values.
-     */
-    @Test
-    public void test2() {
-        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
-                baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T16:00:00",
-                PriceResponseDTO.class
-        );
-
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getBrandId());
-        assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("25.45"), response.getBody().getAmount());
-    }
-
-    /**
-     * Tests the API response for a specific date and time (2020-06-14T21:00:00).
-     * Verifies that the price, productId, and brandId match the expected values.
-     */
-    @Test
-    public void test3() {
-        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
-                baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-14T21:00:00",
-                PriceResponseDTO.class
-        );
-
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getBrandId());
-        assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("35.50"), response.getBody().getAmount());
-    }
-
-    /**
-     * Tests the API response for a specific date and time (2020-06-15T10:00:00).
-     * Verifies that the price, productId, and brandId match the expected values.
-     */
-    @Test
-    public void test4() {
-        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
-                baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-15T10:00:00",
-                PriceResponseDTO.class
-        );
-
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getBrandId());
-        assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("30.50"), response.getBody().getAmount());
-    }
-
-    /**
-     * Tests the API response for a specific date and time (2020-06-16T21:00:00).
-     * Verifies that the price, productId, and brandId match the expected values.
-     */
-    @Test
-    public void test5() {
-        ResponseEntity<PriceResponseDTO> response = restTemplate.getForEntity(
-                baseUrl + "?productId=35455&brandId=1&applicationDate=2020-06-16T21:00:00",
-                PriceResponseDTO.class
-        );
-
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getBrandId());
-        assertEquals(35455, response.getBody().getProductId());
-        assertEquals(new BigDecimal("38.95"), response.getBody().getAmount());
+        assertNotNull(response.getBody(), "Response body should not be null");
+        assertEquals(brandId, response.getBody().getBrandId(), "Brand ID mismatch");
+        assertEquals(productId, response.getBody().getProductId(), "Product ID mismatch");
+        assertEquals(expectedAmount, response.getBody().getAmount(), "Price amount mismatch");
     }
 
     /**
      * Tests the API response for a request with no applicable price.
      */
     @Test
-    public void testGetApplicablePrice_noPriceFound() {
+    void testGetApplicablePrice_noPriceFound() {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 baseUrl + "?productId=99999&brandId=1&applicationDate=2020-06-14T10:00:00",
                 String.class
@@ -128,7 +65,7 @@ public class PriceControllerTests {
      * Tests the API response for a request with invalid input.
      */
     @Test
-    public void testGetApplicablePrice_invalidInput() {
+    void testGetApplicablePrice_invalidInput() {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 baseUrl + "?productId=invalid&brandId=1&applicationDate=2020-06-14T10:00:00",
                 String.class
