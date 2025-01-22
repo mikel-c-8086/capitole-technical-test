@@ -1,6 +1,7 @@
 package com.example.capitoletechnicaltest.service.impl;
 
 import com.example.capitoletechnicaltest.domain.PricePersistence;
+import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.entity.Price;
 import com.example.capitoletechnicaltest.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,12 +46,18 @@ public class SimplePriceService implements PriceService {
      *         or an empty Optional if no price matches the criteria.
      */
     @Override
-    public Optional<Price> getApplicablePrice(int brandId, int productId, LocalDateTime applicationDate) {
-        // Fetch prices matching the criteria, ordered by priority (highest first),
-        // and return the first match.
+    public Optional<PriceResponseDTO> getApplicablePrice(int brandId, int productId, LocalDateTime applicationDate) {
         return pricePersistence.findApplicablePrices(brandId, productId, applicationDate)
                 .stream()
-                .findFirst();
+                .findFirst()
+                .map(price -> new PriceResponseDTO(
+                        price.getProductId(),
+                        price.getBrandId(),
+                        price.getPrice(),
+                        price.getCurr(),
+                        price.getStartDate(),
+                        price.getEndDate()
+                ));
     }
 
 }

@@ -1,88 +1,94 @@
 package com.example.capitoletechnicaltest.service.impl;
 
+import com.example.capitoletechnicaltest.domain.PricePersistence;
+import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.entity.Price;
-import com.example.capitoletechnicaltest.repository.PriceRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
 
+/**
+ * Unit tests for {@link SimplePriceService}.
+ * This class validates the behavior of the service logic for retrieving applicable prices.
+ */
 class SimplePriceServiceTest {
 
-    private SimplePriceService simplePriceService;
-
-    private AutoCloseable autoCloseable;
-
-    @Mock
-    private PriceRepository priceRepository;
-
-    @BeforeEach
-    void setUp() {
-        autoCloseable = MockitoAnnotations.openMocks(this);
-        simplePriceService = new SimplePriceService(priceRepository);
-    }
-
-    @AfterEach
-    void cleanUp() throws Exception {
-        autoCloseable.close();
-    }
-
+    /**
+     * Test case for when no price is found for the given criteria.
+     * Verifies that the service correctly returns an empty Optional.
+     */
     @Test
-    void testGetApplicablePrice_whenPriceExists() {
+    void testGetApplicablePrice_WhenNoPriceFound() {
+        // Stub de PricePersistence
+        PricePersistence pricePersistence = (brandId, productId, applicationDate) -> Collections.emptyList();
+
+        // Instancia del servicio con el stub
+        SimplePriceService simplePriceService = new SimplePriceService(pricePersistence);
+
         // Arrange
         int brandId = 1;
-        int productId = 35455;
-        LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 10, 0);
-        Price mockPrice = new Price();
-        mockPrice.setId(1L);
-        mockPrice.setBrandId(brandId);
-        mockPrice.setProductId(productId);
-        mockPrice.setStartDate(LocalDateTime.of(2020, 6, 14, 0, 0));
-        mockPrice.setEndDate(LocalDateTime.of(2020, 6, 14, 23, 59));
-        mockPrice.setPriceList(1);
-        mockPrice.setPriority(1);
-        mockPrice.setPrice(BigDecimal.valueOf(35.50));
-        mockPrice.setCurr("EUR");
-
-        when(priceRepository.findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
-                brandId, productId, applicationDate, applicationDate)).thenReturn(List.of(mockPrice));
+        int productId = 100;
+        LocalDateTime applicationDate = LocalDateTime.of(2023, 12, 25, 15, 0);
 
         // Act
-        Optional<Price> result = simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
+        Optional<PriceResponseDTO> result = simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
 
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals(mockPrice, result.get());
-        verify(priceRepository, times(1)).findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
-                brandId, productId, applicationDate, applicationDate);
+        assertFalse(result.isPresent(), "Expected no price to be found");
     }
 
+    /**
+     * Test case for when a price is found for the given criteria.
+     * Verifies that the service returns the expected PriceResponseDTO.
+     */
     @Test
-    void testGetApplicablePrice_whenNoPriceExists() {
+    void testGetApplicablePrice_WhenPriceFound() {
+        // Stub de PricePersistence
+        SimplePriceService simplePriceService = getSimplePriceService();
+
         // Arrange
         int brandId = 1;
-        int productId = 35455;
-        LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 10, 0);
-
-        when(priceRepository.findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
-                brandId, productId, applicationDate, applicationDate)).thenReturn(List.of());
+        int productId = 100;
+        LocalDateTime applicationDate = LocalDateTime.of(2023, 12, 25, 15, 0);
 
         // Act
-        Optional<Price> result = simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
+        Optional<PriceResponseDTO> result = simplePriceService.getApplicablePrice(brandId, productId, applicationDate);
 
         // Assert
-        assertTrue(result.isEmpty());
-        verify(priceRepository, times(1)).findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
-                brandId, productId, applicationDate, applicationDate);
+        assertTrue(result.isPresent(), "Expected a price to be found");
+        PriceResponseDTO dto = result.get();
+        assertEquals(productId, dto.getProductId());
+        assertEquals(brandId, dto.getBrandId());
+        assertEquals(new BigDecimal("35.50"), dto.getPrice());
+        assertEquals("EUR", dto.getCurr());
     }
+
+    /**
+     * Helper method to create an instance of {@link SimplePriceService} with a predefined stubbed persistence layer.
+     *
+     * @return A SimplePriceService instance with a stubbed {@link PricePersistence}.
+     */
+    private static SimplePriceService getSimplePriceService() {
+        PricePersistence pricePersistence = (brandId, productId, applicationDate) -> {
+            Price price = new Price();
+            price.setBrandId(brandId);
+            price.setProductId(productId);
+            price.setPrice(new BigDecimal("35.50"));
+            price.setCurr("EUR");
+            price.setStartDate(LocalDateTime.of(2023, 12, 24, 0, 0));
+            price.setEndDate(LocalDateTime.of(2023, 12, 26, 23, 59));
+            return List.of(price);
+        };
+
+        return new SimplePriceService(pricePersistence);
+    }
+
 }

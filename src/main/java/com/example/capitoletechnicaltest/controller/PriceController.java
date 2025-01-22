@@ -1,6 +1,6 @@
 package com.example.capitoletechnicaltest.controller;
 
-import com.example.capitoletechnicaltest.entity.Price;
+import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.service.PriceService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,11 +39,11 @@ public class PriceController {
      * @param brandId         The ID of the brand to filter by.
      * @param productId       The ID of the product to filter by.
      * @param applicationDate The date and time to check for applicable prices, in ISO_LOCAL_DATE_TIME format.
-     * @return A {@link ResponseEntity} containing the applicable {@link Price} if found,
+     * @return A {@link ResponseEntity} containing the applicable {@link PriceResponseDTO} if found,
      *         or a 404 Not Found status if no price matches the criteria.
      */
     @GetMapping
-    public ResponseEntity<Price> getPrice(
+    public ResponseEntity<PriceResponseDTO> getPrice(
             @RequestParam int brandId,
             @RequestParam int productId,
             @RequestParam String applicationDate) {
@@ -52,7 +52,7 @@ public class PriceController {
         LocalDateTime dateTime = LocalDateTime.parse(applicationDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
         // Retrieve the applicable price using the PriceService
-        Optional<Price> price = priceService.getApplicablePrice(brandId, productId, dateTime);
+        Optional<PriceResponseDTO> price = priceService.getApplicablePrice(brandId, productId, dateTime);
 
         // Return the price if found, or a 404 response if not
         return price.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
