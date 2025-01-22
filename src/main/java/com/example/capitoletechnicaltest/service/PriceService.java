@@ -1,5 +1,6 @@
 package com.example.capitoletechnicaltest.service;
 
+import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
 import com.example.capitoletechnicaltest.entity.Price;
 
 import java.time.LocalDateTime;
@@ -23,5 +24,5 @@ public interface PriceService {
      * @return An {@link Optional} containing the applicable {@link Price} if found,
      *         or an empty Optional if no price matches the criteria.
      */
-    Optional<Price> getApplicablePrice(int brandId, int productId, LocalDateTime applicationDate);
+    Optional<PriceResponseDTO> getApplicablePrice(int brandId, int productId, LocalDateTime applicationDate);
 }

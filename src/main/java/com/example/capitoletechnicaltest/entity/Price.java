@@ -57,7 +57,8 @@ public class Price {
     /**
      * The monetary value of the price.
      */
-    private BigDecimal price;
+    @Column(name = "PRICE")
+    private BigDecimal amount;
 
     /**
      * ISO currency code associated with the price.
@@ -122,12 +123,12 @@ public class Price {
         this.priority = priority;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getCurr() {
@@ -153,7 +154,7 @@ public class Price {
                 ", priceList=" + priceList +
                 ", productId=" + productId +
                 ", priority=" + priority +
-                ", price=" + price +
+                ", price=" + amount +
                 ", curr='" + curr + '\'' +
                 '}';
     }

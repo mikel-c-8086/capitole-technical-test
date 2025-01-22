@@ -1,3 +1,4 @@
+
 # Price API Service
 
 This is a Spring Boot application designed to provide a REST API for querying product prices based on a specific date, product ID, and brand ID. It uses an in-memory H2 database initialized with sample data to simulate a real-world e-commerce pricing scenario.
@@ -34,6 +35,25 @@ The application will start on `http://localhost:8080`.
 
 ---
 
+## API Documentation
+
+### SwaggerUI
+
+The application provides interactive API documentation using **SwaggerUI**, which makes it easier to explore and test the API endpoints.
+
+1. Start the application.
+2. Access the SwaggerUI at:
+   ```
+   http://localhost:8080/swagger-ui.html
+   ```
+
+### Features of SwaggerUI:
+- Interactive documentation for all API endpoints.
+- Sample request and response structures.
+- Ability to execute API calls directly from the browser.
+
+---
+
 ## API Overview
 
 ### Endpoint: `/api/prices`
@@ -47,7 +67,6 @@ The application will start on `http://localhost:8080`.
 A JSON object containing:
 - **`productId`**: Identifier of the product.
 - **`brandId`**: Identifier of the brand.
-- **`priceList`**: The applicable price list ID.
 - **`startDate`**: Start date of the applicable price list.
 - **`endDate`**: End date of the applicable price list.
 - **`price`**: Final price.
@@ -62,11 +81,10 @@ GET /api/prices?applicationDate=2020-06-14T10:00:00&productId=35455&brandId=1
 ```json
 {
   "productId": 35455,
-  "brandId": 1,
-  "priceList": 1,
+  "brandId": 1, 
+  "price": 35.50,
   "startDate": "2020-06-14T00:00:00",
   "endDate": "2020-12-31T23:59:59",
-  "price": 35.50,
   "currency": "EUR"
 }
 ```
@@ -99,6 +117,8 @@ The application includes unit and integration tests for the following scenarios:
 3. **Test 3**: Request at `2020-06-14 21:00:00` for product `35455` and brand `1`.
 4. **Test 4**: Request at `2020-06-15 10:00:00` for product `35455` and brand `1`.
 5. **Test 5**: Request at `2020-06-16 21:00:00` for product `35455` and brand `1`.
+6. **Test 6**: Request for a product with no applicable price returns a `404 Not Found` response.
+7. **Test 7**: Request with invalid input returns an `500 Internal Server Error` response.
 
 ### Running the Tests
 ```bash
