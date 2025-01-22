@@ -24,8 +24,6 @@ public class PriceControllerTests {
 
     private final String baseUrl = "/api/prices"; // Base URL for the PriceController endpoints.
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"); // Formatter for date-time strings.
-
     /**
      * Tests the API response for a specific date and time (2020-06-14T10:00:00).
      * Verifies that the price, productId, and brandId match the expected values.
