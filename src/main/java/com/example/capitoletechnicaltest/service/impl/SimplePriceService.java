@@ -1,7 +1,7 @@
 package com.example.capitoletechnicaltest.service.impl;
 
+import com.example.capitoletechnicaltest.domain.PricePersistence;
 import com.example.capitoletechnicaltest.entity.Price;
-import com.example.capitoletechnicaltest.repository.PriceRepository;
 import com.example.capitoletechnicaltest.service.PriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,18 +18,19 @@ import java.util.Optional;
 public class SimplePriceService implements PriceService {
 
     /**
-     * Repository for accessing and managing {@link Price} entities.
+     * Dependency for accessing price data persistence operations.
      */
-    private final PriceRepository priceRepository;
+    private final PricePersistence pricePersistence;
 
     /**
-     * Constructs a new {@link SimplePriceService} with the specified {@link PriceRepository}.
+     * Constructor for SimplePriceService.
+     * Utilizes dependency injection to provide the required {@link PricePersistence} implementation.
      *
-     * @param priceRepository The repository for accessing price data.
+     * @param pricePersistence The persistence layer for managing price data.
      */
     @Autowired
-    public SimplePriceService(PriceRepository priceRepository) {
-        this.priceRepository = priceRepository;
+    public SimplePriceService(PricePersistence pricePersistence) {
+        this.pricePersistence = pricePersistence;
     }
 
     /**
@@ -47,10 +48,9 @@ public class SimplePriceService implements PriceService {
     public Optional<Price> getApplicablePrice(int brandId, int productId, LocalDateTime applicationDate) {
         // Fetch prices matching the criteria, ordered by priority (highest first),
         // and return the first match.
-        return priceRepository
-                .findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
-                        brandId, productId, applicationDate, applicationDate)
+        return pricePersistence.findApplicablePrices(brandId, productId, applicationDate)
                 .stream()
                 .findFirst();
     }
+
 }
