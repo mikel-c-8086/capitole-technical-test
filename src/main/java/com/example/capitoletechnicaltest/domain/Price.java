@@ -1,6 +1,11 @@
-package com.example.capitoletechnicaltest.entity;
+package com.example.capitoletechnicaltest.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,7 +29,7 @@ public class Price {
     /**
      * Identifier of the brand associated with the price.
      */
-    private int brandId;
+    private Long brandId;
 
     /**
      * Start date and time when the price becomes applicable.
@@ -46,7 +51,7 @@ public class Price {
     /**
      * Unique identifier for the product.
      */
-    private int productId;
+    private Long productId;
 
     /**
      * Priority level of the price.
@@ -75,11 +80,11 @@ public class Price {
         this.id = id;
     }
 
-    public int getBrandId() {
+    public Long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(int brandId) {
+    public void setBrandId(Long brandId) {
         this.brandId = brandId;
     }
 
@@ -107,11 +112,11 @@ public class Price {
         this.priceList = priceList;
     }
 
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 

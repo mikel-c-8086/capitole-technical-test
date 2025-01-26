@@ -1,5 +1,6 @@
-package com.example.capitoletechnicaltest.exception;
+package com.example.capitoletechnicaltest.infrastructure;
 
+import com.example.capitoletechnicaltest.domain.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

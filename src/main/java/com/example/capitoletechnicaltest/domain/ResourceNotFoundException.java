@@ -1,4 +1,4 @@
-package com.example.capitoletechnicaltest.exception;
+package com.example.capitoletechnicaltest.domain;
 
 /**
  * Custom exception for resources not found.
