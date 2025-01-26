@@ -1,4 +1,4 @@
-package com.example.capitoletechnicaltest.config;
+package com.example.capitoletechnicaltest.infrastructure;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

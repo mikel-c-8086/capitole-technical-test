@@ -1,4 +1,4 @@
-package com.example.capitoletechnicaltest.config;
+package com.example.capitoletechnicaltest.infrastructure;
 
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.OpenAPI;
