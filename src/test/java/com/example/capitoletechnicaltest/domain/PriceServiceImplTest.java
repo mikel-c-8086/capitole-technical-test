@@ -2,8 +2,6 @@ package com.example.capitoletechnicaltest.domain;
 
 import com.example.capitoletechnicaltest.adapters.inbound.PriceResponseDTO;
 import com.example.capitoletechnicaltest.adapters.outbound.PriceRepository;
-import com.example.capitoletechnicaltest.adapters.outbound.PriceRepositoryImpl;
-import com.example.capitoletechnicaltest.ports.PriceRepositoryPort;
 import com.example.capitoletechnicaltest.ports.PriceServicePort;
 import org.junit.jupiter.api.Test;
 
@@ -32,16 +30,16 @@ class PriceServiceImplTest {
      */
     @Test
     void testFindPriceByProductBrandAndDate_WhenNoPriceFound() {
-        // Mock de PriceRepository
+        // Mock the PriceRepository
         PriceRepository mockPriceRepository = mock(PriceRepository.class);
 
-        // Configurar el mock para devolver una lista vacía
+        // Configure the mock to return an empty list
         when(mockPriceRepository.findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
                 anyLong(), anyLong(), any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(Collections.emptyList());
 
-        // Instancia real de PriceRepositoryImpl
-        PriceRepositoryPort priceRepositoryPort = new PriceRepositoryImpl(mockPriceRepository);
+        // Create a real instance of PriceServiceImpl using the mock
+        PriceServiceImpl priceService = new PriceServiceImpl(mockPriceRepository);
 
         // Arrange
         Long brandId = 1L;
@@ -50,12 +48,11 @@ class PriceServiceImplTest {
 
         // Act & Assert
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            priceRepositoryPort.findPriceByProductBrandAndDate(productId, brandId, applicationDate);
+            priceService.findPrice(productId, brandId, applicationDate);
         });
 
         assertEquals("No applicable price found for the given criteria.", exception.getMessage());
     }
-
 
     /**
      * Test case for when a price is found for the given criteria.
@@ -63,8 +60,16 @@ class PriceServiceImplTest {
      */
     @Test
     void testGetApplicablePrice_WhenPriceFound() {
-        // Service instance with a predefined stubbed repository
-        PriceServicePort priceService = getPriceService();
+        // Mock the PriceRepository
+        PriceRepository mockPriceRepository = mock(PriceRepository.class);
+
+        // Configure the mock to return a predefined Price
+        when(mockPriceRepository.findByBrandIdAndProductIdAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByPriorityDesc(
+                anyLong(), anyLong(), any(LocalDateTime.class), any(LocalDateTime.class)))
+                .thenReturn(Collections.singletonList(createMockPrice()));
+
+        // Create a real instance of PriceServiceImpl using the mock
+        PriceServiceImpl priceService = new PriceServiceImpl(mockPriceRepository);
 
         // Arrange
         Long brandId = 1L;
@@ -85,22 +90,18 @@ class PriceServiceImplTest {
     }
 
     /**
-     * Helper method to create an instance of {@link PriceServiceImpl} with a predefined stubbed repository.
+     * Helper method to create a mock Price object.
      *
-     * @return A PriceServiceImpl instance with a stubbed {@link PriceRepositoryPort}.
+     * @return A mock Price object with predefined values.
      */
-    private static PriceServiceImpl getPriceService() {
-        PriceRepositoryPort priceRepositoryPort = (productId, brandId, applicationDate) -> {
-            Price price = new Price();
-            price.setBrandId(brandId);
-            price.setProductId(productId);
-            price.setAmount(new BigDecimal("35.50"));
-            price.setCurr("EUR");
-            price.setStartDate(LocalDateTime.of(2023, 12, 24, 0, 0));
-            price.setEndDate(LocalDateTime.of(2023, 12, 26, 23, 59));
-            return Optional.of(price);
-        };
-
-        return new PriceServiceImpl(priceRepositoryPort);
+    private static Price createMockPrice() {
+        Price price = new Price();
+        price.setBrandId(1L);
+        price.setProductId(100L);
+        price.setAmount(new BigDecimal("35.50"));
+        price.setCurr("EUR");
+        price.setStartDate(LocalDateTime.of(2023, 12, 24, 0, 0));
+        price.setEndDate(LocalDateTime.of(2023, 12, 26, 23, 59));
+        return price;
     }
 }

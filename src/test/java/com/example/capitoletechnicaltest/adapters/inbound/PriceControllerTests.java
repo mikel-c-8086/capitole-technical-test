@@ -1,6 +1,5 @@
-package com.example.capitoletechnicaltest;
+package com.example.capitoletechnicaltest.adapters.inbound;
 
-import com.example.capitoletechnicaltest.adapters.inbound.PriceResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -73,7 +72,7 @@ class PriceControllerTests {
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertTrue(response.getBody().contains("required type 'int'"));
+        assertTrue(response.getBody().contains("required type 'java.lang.Long'"));
     }
 
 }

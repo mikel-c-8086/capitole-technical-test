@@ -159,6 +159,14 @@ This project adheres to the principles of **Domain-Driven Design** (DDD), which 
 
 ---
 
+## Sonar Coverage and Code Quality
+
+The project demonstrates strong code quality and test coverage, as analyzed by SonarQube. Coverage metrics ensure that a significant portion of the code is covered by automated tests, reducing the risk of undetected issues and improving maintainability.
+
+![Sonar Analysis](./doc/img.png)
+
+---
+
 ## How to Contribute
 
 1. Fork the repository.

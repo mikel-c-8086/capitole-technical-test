@@ -1,9 +1,7 @@
 package com.example.capitoletechnicaltest.domain;
 
 import com.example.capitoletechnicaltest.adapters.outbound.PriceRepository;
-import com.example.capitoletechnicaltest.ports.PriceRepositoryPort;
 import com.example.capitoletechnicaltest.ports.PriceServicePort;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
