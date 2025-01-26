@@ -1,4 +1,6 @@
-package com.example.capitoletechnicaltest.dto;
+package com.example.capitoletechnicaltest.adapters.inbound;
+
+import com.example.capitoletechnicaltest.domain.Price;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -7,8 +9,8 @@ import java.time.LocalDateTime;
  * Data Transfer Object for price response.
  */
 public class PriceResponseDTO {
-    private int productId;
-    private int brandId;
+    private Long productId;
+    private Long brandId;
     private BigDecimal amount;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -19,7 +21,7 @@ public class PriceResponseDTO {
         // Empty constructor
     }
 
-    public PriceResponseDTO(int productId, int brandId, BigDecimal price, String curr, LocalDateTime startDate,
+    public PriceResponseDTO(Long productId, Long brandId, BigDecimal price, String curr, LocalDateTime startDate,
             LocalDateTime endDate) {
         this.productId = productId;
         this.brandId = brandId;
@@ -30,19 +32,19 @@ public class PriceResponseDTO {
     }
 
     // Getters and Setters
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public int getBrandId() {
+    public Long getBrandId() {
         return brandId;
     }
 
-    public void setBrandId(int brandId) {
+    public void setBrandId(Long brandId) {
         this.brandId = brandId;
     }
 
@@ -76,6 +78,15 @@ public class PriceResponseDTO {
 
     public void setCurr(String curr) {
         this.curr = curr;
+    }
+
+    public static PriceResponseDTO fromDomain(Price price) {
+        return new PriceResponseDTO(price.getProductId(),
+                price.getBrandId(),
+                price.getAmount(),
+                price.getCurr(),
+                price.getStartDate(),
+                price.getEndDate());
     }
 
 }

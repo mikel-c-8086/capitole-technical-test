@@ -1,6 +1,6 @@
 package com.example.capitoletechnicaltest;
 
-import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
+import com.example.capitoletechnicaltest.adapters.inbound.PriceResponseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

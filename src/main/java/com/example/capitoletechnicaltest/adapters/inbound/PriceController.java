@@ -1,17 +1,21 @@
-package com.example.capitoletechnicaltest.controller;
+package com.example.capitoletechnicaltest.adapters.inbound;
 
-import com.example.capitoletechnicaltest.dto.PriceResponseDTO;
-import com.example.capitoletechnicaltest.service.PriceService;
+import com.example.capitoletechnicaltest.ports.PriceServicePort;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 /**
  * REST controller for managing price-related requests.
@@ -19,20 +23,21 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api/prices")
+@Validated // Enables validation for request parameters
 public class PriceController {
 
     /**
      * Service layer to handle the business logic for price management.
      */
-    private final PriceService priceService;
+    private final PriceServicePort priceServicePort;
 
     /**
-     * Constructs a new {@link PriceController} with the specified {@link PriceService}.
+     * Constructs a new {@link PriceController} with the specified {@link PriceServicePort}.
      *
-     * @param priceService The service responsible for retrieving applicable prices.
+     * @param priceServicePort The service responsible for retrieving applicable prices.
      */
-    public PriceController(PriceService priceService) {
-        this.priceService = priceService;
+    public PriceController(PriceServicePort priceServicePort) {
+        this.priceServicePort = priceServicePort;
     }
 
     /**
@@ -57,18 +62,23 @@ public class PriceController {
     })
     @GetMapping
     public ResponseEntity<PriceResponseDTO> getPrice(
-            @Parameter(description = "Brand ID", example = "1") @RequestParam int brandId,
-            @Parameter(description = "Product ID", example = "35455") @RequestParam int productId,
+            @Parameter(description = "Brand ID", example = "1")
+            @RequestParam() @NotNull(message = "Brand ID is required") Long brandId,
+
+            @Parameter(description = "Product ID", example = "35455")
+            @RequestParam() @NotNull(message = "Product ID is required") Long productId,
+
             @Parameter(description = "Application Date in ISO format",
-                    example = "2020-06-14T10:00:00") @RequestParam String applicationDate) {
+                    example = "2020-06-14T10:00:00")
+            @RequestParam() @NotBlank(message = "Application Date is required") String applicationDate) {
 
         // Parse the applicationDate parameter to a LocalDateTime object
         LocalDateTime dateTime = LocalDateTime.parse(applicationDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
-        // Retrieve the applicable price using the PriceService
-        Optional<PriceResponseDTO> price = priceService.getApplicablePrice(brandId, productId, dateTime);
-
         // Return the price if found, or a 404 response if not
-        return price.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return priceServicePort.findPrice(productId, brandId, dateTime)
+                .map(price -> ResponseEntity.ok(PriceResponseDTO.fromDomain(price)))
+                .orElse(ResponseEntity.notFound().build());
     }
+
 }
